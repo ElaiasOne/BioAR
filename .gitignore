@@ -1,0 +1,82 @@
+# ==========================================
+# BioAR - Git Ignore Configuration (Detallado)
+# ==========================================
+
+# --- 1. Variables de Entorno y Credenciales Sensibles ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!.env.example
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+
+# --- 2. Historial Personal de Cambios ---
+LogModificaciones.md
+**/LogModificaciones.md
+
+# --- 3. Archivos Subidos por Usuarios (Cargas de Medios) ---
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+public/uploads/*
+uploads/*
+
+# --- 4. Dependencias y Módulos de Node.js ---
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# --- 5. Artefactos de Compilación y Distribución ---
+dist/
+**/dist/
+build/
+**/build/
+.vite/
+.cache/
+
+# --- 6. Editor e IDEs (VSCode, JetBrains, Visual Studio) ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# --- 7. Sistema Operativo ---
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.stackdump
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# --- 8. Archivos Temporales y Cache de IA / Agentes ---
+.agents/
+.antigravity/
+.gemini/
+.brain/
+tmp/
+temp/
+*.tmp

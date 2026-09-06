@@ -1,0 +1,9 @@
+# Frontend BioAR .gitignore
+node_modules/
+dist/
+.env
+.env.local
+!.env.example
+LogModificaciones.md
+*.log
+.vite/

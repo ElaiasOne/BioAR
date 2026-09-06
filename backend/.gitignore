@@ -1,0 +1,9 @@
+# Backend BioAR .gitignore
+node_modules/
+.env
+.env.local
+!.env.example
+LogModificaciones.md
+public/uploads/*
+!public/uploads/.gitkeep
+*.log

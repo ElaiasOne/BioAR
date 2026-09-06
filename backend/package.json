@@ -1,0 +1,33 @@
+{
+  "name": "bioar-backend",
+  "version": "1.0.0",
+  "description": "Backend API REST para plataforma BioAR (Link in Bio)",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "db:init": "node src/db/initDb.js",
+    "db:sync": "node src/db/initDb.js"
+  },
+  "keywords": [
+    "bioar",
+    "linkinbio",
+    "express",
+    "sqlserver",
+    "vue"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^10.0.2",
+    "multer": "^1.4.5-lts.1",
+    "sequelize": "^6.37.1",
+    "sqlite3": "^5.1.7",
+    "tedious": "^18.2.0"
+  }
+}
