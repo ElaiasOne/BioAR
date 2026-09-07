@@ -19,7 +19,7 @@
             v-model="email" 
             type="email" 
             required 
-            placeholder="demo@bioar.me" 
+            placeholder="tu@email.com" 
             class="glass-input"
           />
         </div>
@@ -40,10 +40,7 @@
         </button>
       </form>
 
-      <div class="mt-6 pt-4 border-t border-slate-800 text-center space-y-3">
-        <button @click="fillDemoCredentials" class="btn-secondary w-full justify-center text-xs">
-          ⚡ Usar Cuenta Demo
-        </button>
+      <div class="mt-6 pt-4 border-t border-slate-800 text-center">
         <p class="text-xs text-slate-400">
           ¿No tienes una cuenta aún? 
           <router-link to="/register" class="text-blue-400 hover:underline font-bold">Regístrate Gratis</router-link>
@@ -65,11 +62,6 @@ const loading = ref(false);
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-function fillDemoCredentials() {
-  email.value = 'demo@bioar.me';
-  password.value = '123456';
-}
 
 async function handleLogin() {
   error.value = '';
