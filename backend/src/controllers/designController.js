@@ -33,7 +33,24 @@ async function updateDesignSettings(req, res) {
       show_branding
     } = req.body;
 
-    const { UserSetting } = getModels();
+    const { UserSetting, User } = getModels();
+    const user = await User.findByPk(userId);
+
+    if (user && user.plan === 'free') {
+      if (show_branding === false) {
+        return res.status(403).json({
+          error: 'Eliminar la marca BioAR requiere el Plan PLUS.',
+          requiresUpgrade: true
+        });
+      }
+      if (button_style && button_style !== 'rounded') {
+        return res.status(403).json({
+          error: 'Los estilos de botones avanzados requieren el Plan PLUS.',
+          requiresUpgrade: true
+        });
+      }
+    }
+
     let settings = await UserSetting.findByPk(userId);
 
     if (!settings) {
@@ -52,6 +69,7 @@ async function updateDesignSettings(req, res) {
     await settings.save();
 
     return res.json({ message: 'Diseño actualizado con éxito.', settings });
+
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar diseño.' });
   }
@@ -95,24 +113,26 @@ async function updateProfileAndSeo(req, res) {
   }
 }
 
-// Simulación de Upgrade de Plan
+// Cambio de Plan directo (Solo permitido para plan Free / Downgrade)
 async function upgradePlan(req, res) {
   try {
     const userId = req.user.id;
     const { targetPlan } = req.body;
 
-    if (!['free', 'pro', 'plus'].includes(targetPlan)) {
-      return res.status(400).json({ error: 'Plan no válido.' });
+    if (targetPlan !== 'free') {
+      return res.status(400).json({ 
+        error: 'Para adquirir el plan PRO o PLUS se debe realizar el pago a través de Mercado Pago.' 
+      });
     }
 
     const { User } = getModels();
     const user = await User.findByPk(userId);
     if (user) {
-      user.plan = targetPlan;
+      user.plan = 'free';
       await user.save();
     }
 
-    return res.json({ message: `¡Plan actualizado con éxito a ${targetPlan.toUpperCase()}!`, plan: targetPlan });
+    return res.json({ message: 'Has cambiado al plan FREE exitosamente.', plan: 'free' });
   } catch (error) {
     res.status(500).json({ error: 'Error al cambiar de plan.' });
   }

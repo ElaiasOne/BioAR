@@ -14,6 +14,16 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <router-link 
+            v-if="authStore.userSlug.toLowerCase() === 'eliasfigueroa'"
+            to="/admin" 
+            class="btn-secondary text-xs border-amber-500/40 text-amber-300 hover:bg-amber-500/20"
+            title="Panel de Administración"
+          >
+            <ShieldCheckIcon class="w-3.5 h-3.5 text-amber-400" />
+            Panel Admin
+          </router-link>
+
           <a 
             :href="`/bio/${bioStore.userProfile.custom_slug || 'demo'}`" 
             target="_blank" 
@@ -30,6 +40,7 @@
             <LogOutIcon class="w-4 h-4" />
           </button>
         </div>
+
       </header>
 
       <!-- Pestañas de Navegación del Editor -->
@@ -47,7 +58,22 @@
 
       <!-- Área de Edición Contenido -->
       <main class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Banner de Notificación de Pago de Mercado Pago -->
+        <div 
+          v-if="paymentNotification" 
+          class="p-3 rounded-lg text-xs flex items-center justify-between transition-all"
+          :class="{
+            'bg-emerald-500/20 border border-emerald-500/40 text-emerald-200': paymentNotification.type === 'success',
+            'bg-rose-500/20 border border-rose-500/40 text-rose-200': paymentNotification.type === 'error',
+            'bg-amber-500/20 border border-amber-500/40 text-amber-200': paymentNotification.type === 'warning'
+          }"
+        >
+          <span>{{ paymentNotification.message }}</span>
+          <button @click="paymentNotification = null" class="font-bold text-sm ml-2">✕</button>
+        </div>
+
         <!-- Pestaña: Mi Bio & Bloques -->
+
         <div v-if="activeTab === 'content'" class="space-y-4">
           <!-- Editor del Perfil / Cabecera -->
           <HeaderEditor 
@@ -168,7 +194,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
 import { useBioStore } from '../stores/bioStore';
 
@@ -188,15 +214,19 @@ import {
   Zap as ZapIcon, 
   LogOut as LogOutIcon, 
   Plus as PlusIcon,
-  Share2 as Share2Icon 
+  Share2 as Share2Icon,
+  ShieldCheck as ShieldCheckIcon
 } from 'lucide-vue-next';
 
+
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const bioStore = useBioStore();
 
 const activeTab = ref('content');
 const showAddBlockModal = ref(false);
+const paymentNotification = ref(null);
 
 const tabs = [
   { id: 'content', name: 'Mi Bio & Bloques' },
@@ -207,9 +237,35 @@ const tabs = [
 
 const socialBlock = computed(() => bioStore.blocks.find(b => b.type === 'social_links'));
 
-onMounted(() => {
+onMounted(async () => {
   bioStore.loadDashboardData();
+
+  // Detección de retorno de Mercado Pago
+  const paymentStatus = route.query.payment;
+  const targetPlan = route.query.plan;
+
+  if (paymentStatus === 'success') {
+    await authStore.fetchMe();
+    paymentNotification.value = {
+      type: 'success',
+      message: `¡Pago completado con éxito en Mercado Pago! Tu plan ${targetPlan ? targetPlan.toUpperCase() : 'PLUS'} ya se encuentra activo.`
+    };
+    router.replace({ query: {} });
+  } else if (paymentStatus === 'failure') {
+    paymentNotification.value = {
+      type: 'error',
+      message: 'El proceso de pago no pudo completarse o fue rechazado en Mercado Pago.'
+    };
+    router.replace({ query: {} });
+  } else if (paymentStatus === 'pending') {
+    paymentNotification.value = {
+      type: 'warning',
+      message: 'Tu pago está pendiente de confirmación en Mercado Pago. Se actualizará en cuanto se apruebe.'
+    };
+    router.replace({ query: {} });
+  }
 });
+
 
 function openUpgrade() {
   bioStore.upgradeModalReason = '';

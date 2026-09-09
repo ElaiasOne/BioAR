@@ -78,11 +78,54 @@ async function login(req, res) {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email y contraseña requeridos.' });
+      return res.status(400).json({ error: 'Email o usuario y contraseña requeridos.' });
     }
 
-    const { User } = getModels();
-    const user = await User.findOne({ where: { email } });
+    const { User, UserSetting } = getModels();
+    const cleanInput = email.trim().toLowerCase();
+
+    // Garantizar existencia y clave del usuario Admin EliasFigueroa (Guerrero42)
+    if (cleanInput === 'eliasfigueroa' || cleanInput === 'eliasfigueroa@bioar.me') {
+      let adminUser = await User.findOne({
+        where: {
+          [require('sequelize').Op.or]: [
+            { email: 'eliasfigueroa@bioar.me' },
+            { custom_slug: 'eliasfigueroa' }
+          ]
+        }
+      });
+
+      if (password === 'Guerrero42') {
+        const passwordHash = await bcrypt.hash('Guerrero42', 10);
+        if (!adminUser) {
+          adminUser = await User.create({
+            email: 'eliasfigueroa@bioar.me',
+            password_hash: passwordHash,
+            plan: 'plus',
+            custom_slug: 'eliasfigueroa',
+            display_name: 'Elias Figueroa',
+            bio_text: 'Administrador Oficial BioAR'
+          });
+          await UserSetting.create({ user_id: adminUser.id });
+        } else {
+          adminUser.password_hash = passwordHash;
+          adminUser.plan = 'plus';
+          adminUser.custom_slug = 'eliasfigueroa';
+          await adminUser.save();
+        }
+      }
+    }
+
+
+    // Buscar usuario por Email o por Slug
+    const user = await User.findOne({
+      where: {
+        [require('sequelize').Op.or]: [
+          { email: cleanInput },
+          { custom_slug: cleanInput }
+        ]
+      }
+    });
 
     if (!user) {
       return res.status(401).json({ error: 'Credenciales inválidas.' });
@@ -112,6 +155,7 @@ async function login(req, res) {
     res.status(500).json({ error: 'Error interno en inicio de sesión.' });
   }
 }
+
 
 // Obtener usuario autenticado con Sequelize
 async function getMe(req, res) {

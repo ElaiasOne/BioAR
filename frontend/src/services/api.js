@@ -58,11 +58,12 @@ export const api = {
   reorderBlocks: (orderedIds) => request('/dashboard/blocks/reorder', { method: 'PUT', body: JSON.stringify({ orderedIds }) }),
   deleteBlock: (id) => request(`/dashboard/blocks/${id}`, { method: 'DELETE' }),
 
-  // Diseño y Configuración
+  // Diseño, Configuración y Pagos Mercado Pago
   getDesign: () => request('/dashboard/design'),
   updateDesign: (designData) => request('/dashboard/design', { method: 'PUT', body: JSON.stringify(designData) }),
   updateProfile: (profileData) => request('/dashboard/profile', { method: 'PUT', body: JSON.stringify(profileData) }),
   upgradePlan: (targetPlan) => request('/dashboard/upgrade-plan', { method: 'POST', body: JSON.stringify({ targetPlan }) }),
+  createPaymentPreference: (targetPlan) => request('/payments/create-preference', { method: 'POST', body: JSON.stringify({ targetPlan }) }),
 
   // Carga de Archivos
   uploadImage: (file) => {
@@ -72,5 +73,10 @@ export const api = {
   },
 
   // Perfil Público
-  getPublicProfile: (slug) => request(`/public/${slug}`)
+  getPublicProfile: (slug) => request(`/public/${slug}`),
+
+  // Panel de Administración (Solo Admin EliasFigueroa)
+  adminGetUsers: (search = '') => request(`/admin/users?search=${encodeURIComponent(search)}`),
+  adminTogglePlan: (userId, targetPlan) => request(`/admin/users/${userId}/plan`, { method: 'PUT', body: JSON.stringify({ targetPlan }) })
 };
+

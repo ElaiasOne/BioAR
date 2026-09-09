@@ -49,10 +49,11 @@ async function createBlock(req, res) {
     // Plan logic: Free max 3 bloques
     if (user.plan === 'free' && blockCount >= 3) {
       return res.status(403).json({
-        error: 'Límite alcanzado. El plan Free permite un máximo de 3 bloques. Actualiza a Pro para agregar bloques ilimitados.',
+        error: 'Límite alcanzado. El plan Free permite un máximo de 3 bloques. Actualiza al Plan PLUS para agregar bloques ilimitados.',
         requiresUpgrade: true
       });
     }
+
 
     const nextPosition = blockCount + 1;
     const newBlock = await Block.create({

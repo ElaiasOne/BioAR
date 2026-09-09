@@ -14,15 +14,16 @@
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico o Usuario</label>
           <input 
             v-model="email" 
-            type="email" 
+            type="text" 
             required 
-            placeholder="tu@email.com" 
+            placeholder="tu@email.com o usuario" 
             class="glass-input"
           />
         </div>
+
 
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña</label>

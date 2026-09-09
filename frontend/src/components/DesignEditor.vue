@@ -40,12 +40,12 @@
         </select>
       </div>
 
-      <!-- Estilo de Botón (Opciones Pro desbloqueadas) -->
+      <!-- Estilo de Botón (Opciones Plus desbloqueadas) -->
       <div>
         <div class="flex items-center justify-between mb-1">
           <label class="text-xs font-semibold text-gray-400">Estilo de Botones</label>
           <span v-if="userPlan === 'free'" class="text-xs text-amber-400 font-semibold flex items-center gap-1">
-            <LockIcon class="w-3 h-3" /> Pro
+            <LockIcon class="w-3 h-3" /> Plus
           </span>
         </div>
         <select 
@@ -54,9 +54,9 @@
           class="glass-input"
         >
           <option value="rounded">Bordes Redondeados (Estándar)</option>
-          <option value="pill" :disabled="userPlan === 'free'">Píldora / Curvado Completo (Pro)</option>
-          <option value="shadow" :disabled="userPlan === 'free'">Sombra Neón / Glow (Pro)</option>
-          <option value="glass" :disabled="userPlan === 'free'">Glassmorphism Transparente (Pro)</option>
+          <option value="pill" :disabled="userPlan === 'free'">Píldora / Curvado Completo (Plus)</option>
+          <option value="shadow" :disabled="userPlan === 'free'">Sombra Neón / Glow (Plus)</option>
+          <option value="glass" :disabled="userPlan === 'free'">Glassmorphism Transparente (Plus)</option>
         </select>
       </div>
 
@@ -82,7 +82,7 @@
         </div>
       </div>
 
-      <!-- Quitar Marca de Agua BioAR (Solo Pro/Plus) -->
+      <!-- Quitar Marca de Agua BioAR (Solo Plus) -->
       <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
         <div>
           <span class="text-xs font-bold text-white block">Mostrar marca "BioAR"</span>
@@ -130,7 +130,7 @@ watch(() => props.initialDesign, (newVal) => {
 function onButtonStyleChange() {
   if (props.userPlan === 'free' && design.button_style !== 'rounded') {
     design.button_style = 'rounded';
-    emit('requestUpgrade', 'Los estilos de botones avanzados requieren el plan Pro.');
+    emit('requestUpgrade', 'Los estilos de botones avanzados requieren el Plan PLUS.');
     return;
   }
   emitChange();
@@ -139,11 +139,12 @@ function onButtonStyleChange() {
 function onBrandingToggle() {
   if (props.userPlan === 'free') {
     design.show_branding = true;
-    emit('requestUpgrade', 'Eliminar la marca BioAR requiere el plan Pro.');
+    emit('requestUpgrade', 'Eliminar la marca BioAR requiere el Plan PLUS.');
     return;
   }
   emitChange();
 }
+
 
 let timeout = null;
 function emitChange() {

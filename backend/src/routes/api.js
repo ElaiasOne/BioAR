@@ -10,16 +10,30 @@ const blockController = require('../controllers/blockController');
 const designController = require('../controllers/designController');
 const publicController = require('../controllers/publicController');
 const uploadController = require('../controllers/uploadController');
+const paymentController = require('../controllers/paymentController');
+const adminController = require('../controllers/adminController');
 
 // Rutas Públicas de Autenticación
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
+
+// Rutas Privadas de Administración (Solo EliasFigueroa)
+router.get('/admin/users', authenticateToken, adminController.requireAdmin, adminController.getUsers);
+router.put('/admin/users/:id/plan', authenticateToken, adminController.requireAdmin, adminController.toggleUserPlan);
+
+// Webhook Público de Mercado Pago
+router.post('/payments/webhook', paymentController.handleWebhook);
+router.get('/payments/webhook', paymentController.handleWebhook);
+
 
 // Ruta Pública de perfil de usuario
 router.get('/public/:slug', publicController.getPublicProfile);
 
 // Rutas Protegidas (Dashboard)
 router.get('/auth/me', authenticateToken, authController.getMe);
+
+// Pasarela de Pagos (Mercado Pago ARS)
+router.post('/payments/create-preference', authenticateToken, paymentController.createPreference);
 
 // Gestor de Bloques
 router.get('/dashboard/blocks', authenticateToken, blockController.getUserBlocks);
